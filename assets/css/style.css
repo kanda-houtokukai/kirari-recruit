@@ -1,0 +1,301 @@
+:root{
+    --paper:#F6FAFC;        /* みずいろの紙 */
+    --ink:#24404D;          /* 青を含んだ墨 */
+    --ink-60:rgba(36,64,77,.62);
+    --ink-40:rgba(36,64,77,.4);
+    --hair:rgba(36,64,77,.16);   /* 髪の毛罫 */
+    --pine:#2A6584;         /* 湖の青 */
+    --pine-deep:#D9ECF4;    /* 面に使う淡い水色 */
+    --leaf:#20566E;         /* 面の上の濃い青 */
+    --sun:#C75F32;          /* 珊瑚（時刻とCTAだけに使う） */
+    --ph-bg:#E3EBEF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:#DEE7EC;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--ink);
+    -webkit-font-smoothing:antialiased;}
+  .phone{max-width:430px;margin:0 auto;background:var(--paper);min-height:100vh;padding-top:32px;padding-bottom:110px;}
+  /* 電話・メールの両方が未確定で固定CTAを出さないときは、CTAのぶんの余白も詰める */
+  body.no-cta .phone{padding-bottom:64px;}
+
+  /* hidden 属性は display:flex より強く効かせる（CTAボタン等で使う） */
+  [hidden]{display:none !important;}
+
+  .ph{background:var(--ph-bg);display:flex;align-items:center;justify-content:center;text-align:center;
+    color:#8896A0;font-size:10.5px;letter-spacing:.08em;line-height:1.8;padding:10px;}
+  .ph b{display:block;font-size:11.5px;color:#687984;font-weight:700;margin-bottom:2px;}
+
+  /* ── 写真枠 ──
+     縦横比は枠側（.ph の height と幅）で固定し、写真は object-fit:cover で収める。
+     写真に合わせて枠を変えない。個別の寄せだけ object-position を img に直書きする。
+     .pending ＝ ファイルがまだ無い状態。枠を保ったままプレースホルダの文字を出す。
+     写真が届いたら assets/img/ に台帳のファイル名で置くだけで切り替わる（HTML・CSSは触らない）。 */
+  .ph.shot{padding:0;}
+  .ph.shot > img{width:100%;height:100%;object-fit:cover;display:block;}
+  .ph.shot > span{display:none;}
+  .ph.shot.pending{padding:10px;}
+  .ph.shot.pending > img{display:none;}
+  .ph.shot.pending > span{display:block;}
+  /* 写真が未入手のあいだは拡大できないので、拡大カーソルと＋マークを出さない */
+  .album .pic.zoomable .ph.pending{cursor:default;}
+  .album .pic.zoomable .ph.pending::after{display:none;}
+
+  .spark{display:inline-block;vertical-align:-1px;}
+
+  header{padding:22px 24px 0;display:flex;justify-content:space-between;align-items:flex-start;}
+  header .org{font-size:10px;color:var(--ink-60);letter-spacing:.22em;}
+  header .fac{font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;letter-spacing:.14em;margin-top:5px;
+    display:flex;align-items:center;gap:7px;}
+  header .tag{font-size:10.5px;letter-spacing:.26em;color:var(--pine);padding:5px 0 0;}
+
+  /* ── ファーストビュー ── */
+  .fv{padding:60px 24px 0;}
+  .fv .job{font-family:'Shippori Mincho B1',serif;font-size:19px;font-weight:700;line-height:2.05;letter-spacing:.04em;}
+  .fv .mark{margin:34px 0 0 2px;}
+  .fv h1{font-family:'Shippori Mincho B1',serif;font-size:23px;font-weight:700;line-height:2.0;letter-spacing:.03em;margin-top:14px;}
+  .fv .letter{margin-top:34px;font-size:13.5px;line-height:2.25;color:var(--ink);}
+  .fv .letter p + p{margin-top:16px;}
+
+  /* 出勤前後の時刻を静かに置く：このページの主役は「時間」 */
+
+  /* 写真：フルブリード＋指で送る */
+  .strip{margin-top:44px;display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:0 24px;scrollbar-width:none;}
+  .strip::-webkit-scrollbar{display:none;}
+  .strip .ph{flex:0 0 88%;height:300px;scroll-snap-align:center;}
+  .strip-hint{font-size:10px;color:#8E9BA4;letter-spacing:.14em;text-align:right;margin:10px 24px 0;}
+
+  /* ── 章見出しの型：短い太罫＋トラッキングの効いた肩ラベル＋明朝 ── */
+  section{padding:0 24px;}
+  .sec{margin-top:92px;}
+  .sec.tint{padding:46px 24px 44px;}
+  .t2{background:#EDF5F9;} .t3{background:#F5F1EA;} .t4{background:#EAF3ED;}
+  .t5{background:#F0F3F7;} .t6{background:#F7F2EA;} .t7{background:#EEF4F7;}
+  .kick{display:flex;align-items:baseline;gap:12px;}
+  .kick i{font-family:'Shippori Mincho B1',serif;font-style:normal;font-size:27px;font-weight:700;
+    letter-spacing:.01em;line-height:1;color:var(--sun);}
+  .kick h2{margin-top:0;}
+  .sec h2, .facts h2{font-family:'Shippori Mincho B1',serif;font-size:22px;font-weight:700;letter-spacing:.16em;}
+
+  /* ── 勤務条件：深い松葉の面。ページでいちばん強い一枚 ── */
+  .facts{margin-top:92px;background:var(--pine-deep);color:var(--ink);padding:52px 24px 46px;}
+
+  .facts h2{color:var(--ink);}
+  .fact-grid{margin-top:40px;}
+  .fact{padding:22px 0;border-top:1px solid rgba(36,64,77,.18);}
+  .fact:first-child{border-top:none;padding-top:0;}
+  .fact .k{font-size:10.5px;letter-spacing:.24em;color:var(--leaf);}
+  .fact .v{font-family:'Shippori Mincho B1',serif;font-size:33px;font-weight:700;letter-spacing:.02em;line-height:1.4;margin-top:8px;overflow:hidden;}
+  .fact .v .in-v{display:inline-block;transform:translateY(110%);transition:transform .9s cubic-bezier(.2,.7,.2,1);}
+  .fact.on .v .in-v{transform:none;}
+  .fact .v .u{font-size:15px;letter-spacing:.08em;}
+  .fact .v.word{font-size:22px;}
+  .fact .note{font-size:11.5px;color:rgba(36,64,77,.72);line-height:1.9;margin-top:7px;}
+  .facts
+
+  /* ── きらりの特徴：主張は明朝・根拠はゴシック ── */
+  .diff-list{margin-top:38px;}
+  .diff-item{padding-left:34px;position:relative;}
+  .diff-item + .diff-item{margin-top:26px;padding-top:26px;border-top:1px solid var(--hair);}
+  .diff-item .no{position:absolute;left:0;top:6px;font-size:11px;font-weight:700;
+    color:var(--pine);letter-spacing:.14em;}
+  .diff-item + .diff-item .no{top:32px;}
+  .diff-item .claim{font-family:'Shippori Mincho B1',serif;font-size:16.5px;font-weight:700;line-height:1.6;letter-spacing:.03em;}
+  .diff-item .why{font-size:13px;line-height:2.05;color:var(--ink-60);margin-top:7px;}
+  .memo-line{margin-top:32px;font-size:11.5px;color:var(--ink-60);line-height:2;}
+
+  /* ── 全面写真 ── */
+  .band{margin-top:92px;position:relative;height:340px;overflow:hidden;}
+  .band .ph{position:absolute;inset:-14% 0;height:auto;overflow:hidden;will-change:transform;}
+  .band .veil{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(30,48,60,.62),rgba(30,48,60,.04) 58%);}
+  .band .words{position:absolute;left:24px;right:24px;top:26px;color:#F6FAFC;
+    font-family:'Shippori Mincho B1',serif;font-size:16.5px;font-weight:700;line-height:2.05;letter-spacing:.04em;}
+
+  /* ── 1日の流れ：松葉の罫に朝日の点。時刻は明朝で大きく ── */
+  .tl-lead{margin-top:18px;font-size:12.5px;line-height:2.05;color:var(--ink-60);}
+  .tl{margin-top:30px;position:relative;padding-left:58px;}
+  .tl-item{position:relative;padding-bottom:38px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:"";position:absolute;left:-22px;top:9px;width:8px;height:8px;border-radius:50%;
+    background:var(--sun);}
+  .tl-time{font-family:'Shippori Mincho B1',serif;font-size:19px;font-weight:700;letter-spacing:.06em;}
+  .tl-txt{font-size:13px;line-height:2.05;margin-top:7px;}
+  .tl-photo{margin-top:14px;height:158px;}
+
+  /* ── きらりの役割 ── */
+  .role-lead{margin-top:30px;padding-left:16px;border-left:2px solid var(--pine);}
+  .role-lead p{font-size:13.5px;line-height:2.15;}
+  .role-lead p + p{margin-top:12px;}
+  .role-lead .law{font-size:11px;letter-spacing:.16em;color:var(--pine);font-weight:700;margin-bottom:8px;}
+  .role-photo{margin-top:30px;height:210px;}
+  .role-list dt{font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;letter-spacing:.04em;
+    margin-top:30px;padding-left:24px;position:relative;}
+  .role-list dt .no{position:absolute;left:0;top:5px;font-size:11px;font-weight:700;color:var(--pine);letter-spacing:.14em;}
+  .role-list dd{font-size:13px;line-height:2.05;color:var(--ink-60);margin-top:6px;padding-left:24px;}
+
+  /* ── 施設紹介：大きい1枚＋2枚組のリズム ── */
+  .album .pic{margin-top:18px;}
+  .album .pic .ph{height:200px;}
+  .album .duo{display:flex;gap:12px;margin-top:18px;}
+  .album .duo .pic{flex:1;margin-top:0;}
+  .album .duo .ph{height:150px;}
+  .album .pic .ph{cursor:default;}
+  .album .pic.zoomable .ph{cursor:zoom-in;position:relative;}
+  .album .pic.zoomable .ph::after{content:"＋";position:absolute;right:0;bottom:0;
+    width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+    background:rgba(24,44,56,.58);color:#FFFFFF;font-size:24px;font-weight:700;line-height:1;
+    transition:background-color .25s ease;}
+  .album .pic.zoomable:active .ph::after{background-color:rgba(24,44,56,.8);}
+  .album .cap{display:flex;align-items:baseline;justify-content:space-between;margin-top:7px;
+    font-size:10.5px;color:var(--ink-60);letter-spacing:.14em;}
+  .album .cap i{font-style:normal;color:var(--ink-40);letter-spacing:.08em;}
+
+  /* ── 募集要項：刊行物の要項表。髪の毛罫を丁寧に引く ── */
+  .req table{width:100%;border-collapse:collapse;margin-top:36px;font-size:13px;}
+  .req th{width:31%;text-align:left;vertical-align:top;padding:15px 8px 15px 0;
+    font-size:10.5px;font-weight:700;letter-spacing:.22em;color:var(--pine);border-bottom:1px solid var(--hair);}
+  .req td{padding:14px 0;line-height:1.95;border-bottom:1px solid var(--hair);}
+  .req tr:first-child th,.req tr:first-child td{border-top:1px solid var(--hair);}
+
+  /* ── よくある質問 ── */
+  .faq-list{margin-top:34px;border-top:1px solid var(--hair);}
+  .faq-list details{border-bottom:1px solid var(--hair);transition:background-color .4s ease;}
+  .faq-list details[open]{background:rgba(217,236,244,.42);}
+  .faq-list summary{transition:color .3s ease;}
+  .faq-list details[open] summary{color:var(--pine);font-weight:700;}
+  .faq-list details[open] summary::before{color:var(--sun);}
+  .faq-list .a{overflow:hidden;height:0;opacity:0;will-change:height;
+    transition:height .42s cubic-bezier(.33,.9,.36,1),opacity .26s ease;}
+  .faq-list .a-in{padding:2px 6px 26px 34px;}
+  .faq-list summary{list-style:none;cursor:pointer;padding:0 34px 0 34px;min-height:82px;
+    display:flex;align-items:center;position:relative;-webkit-tap-highlight-color:transparent;
+    font-size:13.5px;font-weight:500;line-height:1.85;}
+  .faq-list summary::-webkit-details-marker{display:none;}
+  .faq-list summary::before{content:"Q";position:absolute;left:2px;top:50%;margin-top:-11px;
+    font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;color:var(--pine);}
+  .faq-list summary::after{content:"";position:absolute;right:4px;top:50%;margin-top:-1px;width:12px;height:2px;background:var(--ink-40);}
+  .faq-list summary span.cross{position:absolute;right:9px;top:50%;margin-top:-6px;width:2px;height:12px;background:var(--ink-40);transition:transform .35s cubic-bezier(.25,.7,.2,1);}
+  .faq-list details[open] summary::after{background:var(--sun);}
+  .faq-list details[open] summary span.cross{transform:rotate(90deg) scaleX(0);}
+  .faq-list .a{padding:0;font-size:12.5px;line-height:2.05;color:var(--ink-60);position:relative;}
+  .faq-list .a::before{content:"A";position:absolute;left:3px;top:0;font-family:'Shippori Mincho B1',serif;
+    font-size:16px;font-weight:700;color:var(--sun);}
+
+  /* ── 結び ── */
+  .closing{margin-top:92px;padding:0;}
+  .closing .ph{height:240px;}
+  .closing .txt{padding:42px 24px 0;}
+  .closing p{font-family:'Shippori Mincho B1',serif;font-size:14px;font-weight:500;line-height:2.4;letter-spacing:.02em;}
+  .closing p + p{margin-top:16px;}
+  /* 反映確認用のバージョン表示。読み物の邪魔をしない濃さに留める */
+  .closing .ver{font-family:'Zen Kaku Gothic New',sans-serif;font-size:9px;font-weight:400;
+    letter-spacing:.12em;line-height:1.6;color:rgba(36,64,77,.34);text-align:right;margin-top:14px;}
+  .closing .sign{display:flex;align-items:center;justify-content:flex-end;gap:7px;
+    margin-top:28px;font-size:12px;color:var(--ink-60);letter-spacing:.14em;font-family:'Zen Kaku Gothic New',sans-serif;}
+
+  /* ── 固定CTA：朝日の電話 ── */
+  .cta-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:5;
+    background:rgba(246,250,252,.97);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+    padding:11px 16px 14px;box-shadow:0 -10px 26px rgba(36,64,77,.10);}
+  .cta-lead{font-size:10px;letter-spacing:.14em;color:var(--ink-60);text-align:center;margin-bottom:8px;}
+  .cta-row{display:flex;gap:10px;align-items:stretch;}
+  .cta-btn{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;
+    text-decoration:none;padding:12px 6px;border-radius:4px;}
+  .cta-btn .b{font-size:14.5px;font-weight:700;letter-spacing:.06em;}
+  .cta-btn .s{font-size:9.5px;letter-spacing:.08em;margin-top:3px;opacity:.85;}
+  .cta-tel{background:#B4552A;color:#FFFDF8;}
+  .cta-mail{background:var(--paper);color:var(--pine);border:1.5px solid var(--pine);}
+
+  /* ── 動き：読み込み時にファーストビューだけ整列して現れる。以降はスクロール反応 ── */
+  .up{opacity:0;transform:translateY(16px);animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards;}
+  .up.d1{animation-delay:.1s;} .up.d2{animation-delay:.22s;} .up.d3{animation-delay:.34s;} .up.d4{animation-delay:.46s;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  .wipe{clip-path:inset(100% 0 0 0);transition:clip-path 1.3s cubic-bezier(.3,.6,.15,1);}
+  .wipe.seen{clip-path:inset(0 0 0 0);}
+  .tl .rail-bg{position:absolute;left:39px;top:8px;bottom:26px;width:2px;background:rgba(42,101,132,.22);}
+  .tl .fill{position:absolute;left:0;top:0;width:100%;height:100%;background:var(--pine);transform:scaleY(0);transform-origin:top;}
+  /* height:auto ＝ width/height 属性から縦横比を先に確保する（遅延読み込み中の高さ0を防ぐ）。表示結果は 38×49px でモックと同じ */
+  .tl .mascot{position:absolute;left:-44px;top:-19px;width:38px;height:auto;pointer-events:none;
+    will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+  .tl .sundot{position:absolute;left:-3px;top:-4px;width:8px;height:8px;border-radius:50%;background:var(--sun-soft);
+    will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    box-shadow:0 0 0 3px rgba(217,117,74,.22);}
+  .tl-item::before{background:#B9CBD4;transition:background .5s,transform .5s;}
+  .tl-item.lit::before{background:rgba(217,117,74,.45);}
+  .tl-item.now::before{background:var(--sun);transform:scale(1.5);
+    box-shadow:0 0 0 5px rgba(217,117,74,.16);}
+  .tl-time{transform-origin:left center;
+    transition:color .45s ease,transform .45s cubic-bezier(.25,.8,.3,1);}
+  .tl-item.now .tl-time{color:var(--sun);transform:scale(1.28);}
+  .tl-txt{transition:color .45s ease;}
+  .tl-item.now .tl-txt{color:var(--ink);}
+  .tl-item:not(.now) .tl-txt{color:var(--ink-60);}
+  .rv{opacity:0;transform:translateY(12px);transition:opacity .9s ease,transform .9s ease;}
+  .rv.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none;}
+    .wipe{clip-path:none;transition:none;}
+    .faq-list .a{transition:none;will-change:auto;}
+    .tl .fill{transform:none;} .tl .sundot,.tl .mascot{display:none;}
+    .tl-item::before{background:var(--sun-soft);}
+    .up{animation:none;opacity:1;transform:none;}
+    .rv{opacity:1;transform:none;transition:none;}
+    .fact .v .in-v{transform:none;transition:none;}
+    .band .ph{transform:none !important;}
+  }
+
+  /* ── 上部の流れる帯 ── */
+  .ticker{background:#24404D;overflow:hidden;position:fixed;top:0;left:50%;transform:translateX(-50%);
+    width:100%;max-width:430px;z-index:20;}
+  .ticker-track{display:flex;width:max-content;animation:flow 46s linear infinite;}
+  .ticker-track span{display:flex;align-items:center;gap:14px;padding:0 14px;
+    height:32px;color:#EFF6F9;font-size:10.5px;letter-spacing:.34em;white-space:nowrap;}
+  .ticker-track span svg{flex-shrink:0;}
+  .ticker::before,.ticker::after{content:"";position:absolute;top:0;bottom:0;width:34px;z-index:2;pointer-events:none;}
+  .ticker::before{left:0;background:linear-gradient(to right,#24404D,rgba(36,64,77,0));}
+  .ticker::after{right:0;background:linear-gradient(to left,#24404D,rgba(36,64,77,0));}
+  @keyframes flow{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ── 全面写真ヒーロー ── */
+  .hero{position:relative;height:80vh;min-height:540px;overflow:hidden;background:#20404F;}
+  .hero .stage{position:absolute;inset:0;}
+  .hero .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease;}
+  .hero .slide.on{opacity:1;}
+  .hero .slide img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero .veil{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to bottom,rgba(20,36,46,.34) 0%,rgba(20,36,46,.06) 32%,rgba(20,36,46,.62) 100%);}
+  .hero .top{position:absolute;left:22px;right:22px;top:20px;display:flex;justify-content:space-between;align-items:flex-start;color:#F6FAFC;}
+  .hero .top .org{font-size:10px;letter-spacing:.22em;opacity:.86;}
+  .hero .top .fac{font-family:'Shippori Mincho B1',serif;font-size:14.5px;font-weight:700;letter-spacing:.14em;
+    margin-top:5px;display:flex;align-items:center;gap:7px;}
+  .hero .top .tag{font-size:10px;letter-spacing:.26em;opacity:.9;padding-top:4px;}
+  .hero .copy{position:absolute;left:22px;right:22px;bottom:76px;color:#F6FAFC;}
+  .hero .job{font-size:11.5px;letter-spacing:.14em;line-height:2;opacity:.94;}
+  .hero h1{font-family:'Shippori Mincho B1',serif;font-size:25px;font-weight:700;line-height:1.95;letter-spacing:.03em;
+    margin-top:14px;text-shadow:0 1px 22px rgba(16,30,38,.5);}
+  .hero .place{position:absolute;left:22px;bottom:44px;color:#F6FAFC;font-size:10.5px;letter-spacing:.18em;
+    display:flex;align-items:center;gap:8px;opacity:.86;}
+  .hero .place::before{content:"";width:14px;height:1px;background:rgba(246,250,252,.7);}
+  .hero .dots{position:absolute;right:22px;bottom:46px;display:flex;gap:7px;}
+  .hero .dots i{width:5px;height:5px;border-radius:50%;background:rgba(246,250,252,.4);transition:background .5s;}
+  .hero .dots i.on{background:var(--sun-soft);}
+  .hero .scroll{position:absolute;left:50%;transform:translateX(-50%);bottom:16px;color:rgba(246,250,252,.75);
+    font-size:9.5px;letter-spacing:.2em;}
+  .lead{padding:52px 24px 0;}
+  .lead p{font-size:13.5px;line-height:2.25;}
+  .lead p + p{margin-top:16px;}
+
+  /* ── 写真のポップアップ ── */
+  .lb{position:fixed;inset:0;z-index:60;-webkit-transform:translateZ(0);transform:translateZ(0);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:26px 20px;
+    background:rgba(24,44,56,.78);
+    opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s;}
+  .lb.on{opacity:1;visibility:visible;}
+  .lb img{max-width:100%;max-height:66vh;display:block;border-radius:3px;
+    box-shadow:0 18px 44px rgba(12,24,32,.4);transform:scale(.96);transition:transform .4s cubic-bezier(.25,.8,.3,1);}
+  .lb.on img{transform:scale(1);}
+  .lb .lb-cap{max-width:100%;margin-top:20px;color:#F6FAFC;text-align:center;}
+  .lb .lb-cap b{display:block;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.12em;}
+  .lb .lb-cap span{display:block;font-size:12.5px;line-height:2;margin-top:8px;color:rgba(246,250,252,.82);}
+  .lb .lb-close{position:absolute;top:16px;right:18px;width:38px;height:38px;border:none;border-radius:50%;
+    background:rgba(246,250,252,.16);color:#F6FAFC;font-size:20px;line-height:1;cursor:pointer;}
