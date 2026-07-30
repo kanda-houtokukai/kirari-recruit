@@ -79,17 +79,61 @@
   document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
   if(reduce){ document.querySelectorAll('.fact').forEach(function(el){ el.classList.add('on'); }); }
 
+  /* ── 写真のポップアップ（ギャラリー対応） ──
+     枠の data-more にカンマ区切りで追加画像を書くと、ポップアップ内で左右に送れる。
+     追加画像はポップアップを開いた時点で読み込む（一覧の表示を重くしないため）。
+     1枚だけの枠は従来どおり: 送りなし・点なし。 */
   (function(){
-    var lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'),
+    var lb = document.getElementById('lb'),
+        track = document.getElementById('lbTrack'),
+        viewport = document.getElementById('lbViewport'),
+        dots = document.getElementById('lbDots'),
         lbTitle = document.getElementById('lbTitle'), lbText = document.getElementById('lbText');
+    var idx = 0, count = 1;
+
+    function render(animate){
+      if(animate === false) track.style.transition = 'none';
+      track.style.transform = 'translateX(' + (-idx * 100) + '%)';
+      if(animate === false){ void track.offsetWidth; track.style.transition = ''; }
+      Array.prototype.forEach.call(dots.children, function(d, i){ d.classList.toggle('on', i === idx); });
+    }
+    function go(n){ idx = Math.max(0, Math.min(count - 1, n)); render(); }
     function close(){ lb.classList.remove('on'); lb.setAttribute('aria-hidden','true'); document.body.style.overflow = ''; }
-    document.querySelectorAll('.album .pic.zoomable').forEach(function(pic){
+
+    document.querySelectorAll('.pic.zoomable').forEach(function(pic){
       pic.addEventListener('click', function(){
         // 写真が未入手（プレースホルダ表示中）の枠は拡大しない
         var frame = pic.querySelector('.ph');
         if(frame && frame.classList.contains('pending')) return;
         var img = pic.querySelector('img'); if(!img) return;
-        lbImg.src = img.src;
+
+        var srcs = [img.src];
+        (pic.dataset.more || '').split(',').forEach(function(s){ if(s.trim()) srcs.push(s.trim()); });
+
+        track.innerHTML = ''; dots.innerHTML = '';
+        srcs.forEach(function(src, i){
+          var el = document.createElement('img');
+          el.src = src; el.alt = '';
+          // 追加画像のファイルが無ければ、そのスライドと点を取り下げる（安全側）
+          el.onerror = function(){
+            var k = Array.prototype.indexOf.call(track.children, el);
+            if(k < 0) return;
+            track.removeChild(el);
+            if(dots.children[k]) dots.removeChild(dots.children[k]);
+            count = track.children.length;
+            if(count <= 1) lb.classList.remove('multi');
+            if(idx >= count) idx = count - 1;
+            render(false);
+          };
+          track.appendChild(el);
+          var d = document.createElement('i');
+          d.addEventListener('click', function(){ go(i); });
+          dots.appendChild(d);
+        });
+        count = srcs.length; idx = 0;
+        lb.classList.toggle('multi', count > 1);
+        render(false);
+
         lbTitle.textContent = pic.dataset.title || '';
         // 説明文が未記入の写真は、説明行ごと出さず見出しだけにする
         var txt = (pic.dataset.text || '').trim();
@@ -99,9 +143,41 @@
         document.body.style.overflow = 'hidden';
       });
     });
+
+    // 指での横送り。開始点の判定はビューポート、追従は translateX の一時上書きで行う
+    var startX = 0, dx = 0, dragging = false;
+    viewport.addEventListener('pointerdown', function(e){
+      if(count <= 1) return;
+      dragging = true; startX = e.clientX; dx = 0;
+      track.style.transition = 'none';
+      viewport.setPointerCapture(e.pointerId);
+    });
+    viewport.addEventListener('pointermove', function(e){
+      if(!dragging) return;
+      dx = e.clientX - startX;
+      // 端では抵抗を付ける（それ以上先が無いことを指に伝える）
+      if((idx === 0 && dx > 0) || (idx === count - 1 && dx < 0)) dx = dx * .35;
+      track.style.transform = 'translateX(calc(' + (-idx * 100) + '% + ' + dx.toFixed(1) + 'px))';
+    });
+    function settle(){
+      if(!dragging) return;
+      dragging = false;
+      track.style.transition = '';
+      if(Math.abs(dx) > 48) go(idx + (dx < 0 ? 1 : -1)); else render();
+      dx = 0;
+    }
+    viewport.addEventListener('pointerup', settle);
+    viewport.addEventListener('pointercancel', settle);
+
     document.getElementById('lbClose').addEventListener('click', close);
-    lb.addEventListener('click', function(e){ if(e.target !== lbImg) close(); });
-    addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+    // 背景（暗がり）を押したときだけ閉じる。写真・点・説明への操作では閉じない
+    lb.addEventListener('click', function(e){ if(e.target === lb) close(); });
+    addEventListener('keydown', function(e){
+      if(e.key === 'Escape') close();
+      if(!lb.classList.contains('on')) return;
+      if(e.key === 'ArrowRight') go(idx + 1);
+      if(e.key === 'ArrowLeft') go(idx - 1);
+    });
   })();
 
   (function(){

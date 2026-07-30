@@ -4,8 +4,5 @@
 # 社内向けのドキュメントは公開しない。
 docs/
 CLAUDE.md
-#
-# 差し替え前の原本写真。公開物には含めない。
-_originals/
 
 .DS_Store

@@ -37,8 +37,8 @@
   .ph.shot.pending > img{display:none;}
   .ph.shot.pending > span{display:block;}
   /* 写真が未入手のあいだは拡大できないので、拡大カーソルと＋マークを出さない */
-  .album .pic.zoomable .ph.pending{cursor:default;}
-  .album .pic.zoomable .ph.pending::after{display:none;}
+  .pic.zoomable .ph.pending{cursor:default;}
+  .pic.zoomable .ph.pending::after{display:none;}
 
   .spark{display:inline-block;vertical-align:-1px;}
 
@@ -107,8 +107,9 @@
   /* ── 全面写真 ── */
   .band{margin-top:92px;position:relative;height:340px;overflow:hidden;}
   .band .ph{position:absolute;inset:-14% 0;height:auto;overflow:hidden;will-change:transform;}
-  .band .veil{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(30,48,60,.62),rgba(30,48,60,.04) 58%);}
-  .band .words{position:absolute;left:24px;right:24px;top:26px;color:#F6FAFC;
+  /* 文字は右上・覆いも右上が濃い向き（2026-07-30 の写真差し替えで変更。写真の空が右上に広がるため） */
+  .band .veil{position:absolute;inset:0;background:linear-gradient(225deg,rgba(30,48,60,.62),rgba(30,48,60,.04) 58%);}
+  .band .words{position:absolute;left:24px;right:24px;top:26px;text-align:right;color:#F6FAFC;
     font-family:'Shippori Mincho B1',serif;font-size:16.5px;font-weight:700;line-height:2.05;letter-spacing:.04em;}
 
   /* ── 1日の流れ：松葉の罫に朝日の点。時刻は明朝で大きく ── */
@@ -140,12 +141,12 @@
   .album .duo .pic{flex:1;margin-top:0;}
   .album .duo .ph{height:150px;}
   .album .pic .ph{cursor:default;}
-  .album .pic.zoomable .ph{cursor:zoom-in;position:relative;}
-  .album .pic.zoomable .ph::after{content:"＋";position:absolute;right:0;bottom:0;
+  .pic.zoomable .ph{cursor:zoom-in;position:relative;}
+  .pic.zoomable .ph::after{content:"＋";position:absolute;right:0;bottom:0;
     width:46px;height:46px;display:flex;align-items:center;justify-content:center;
     background:rgba(24,44,56,.58);color:#FFFFFF;font-size:24px;font-weight:700;line-height:1;
     transition:background-color .25s ease;}
-  .album .pic.zoomable:active .ph::after{background-color:rgba(24,44,56,.8);}
+  .pic.zoomable:active .ph::after{background-color:rgba(24,44,56,.8);}
   .album .cap{display:flex;align-items:baseline;justify-content:space-between;margin-top:7px;
     font-size:10.5px;color:var(--ink-60);letter-spacing:.14em;}
   .album .cap i{font-style:normal;color:var(--ink-40);letter-spacing:.08em;}
@@ -285,15 +286,32 @@
   .lead p{font-size:13.5px;line-height:2.25;}
   .lead p + p{margin-top:16px;}
 
-  /* ── 写真のポップアップ ── */
+  /* ── 写真のポップアップ ──
+     1枠1枚のときは従来どおり（自然な縦横比＋角丸＋影）。
+     複数枚の枠（.lb.multi）は横送りのギャラリーになる: .lb-track を translateX で動かし、
+     スライドの高さを 60vh に固定して送り中に高さが跳ねないようにする。
+     ⚠️ 動く .lb-track に filter を付けない（iOS Safari の残像）。影は box-shadow のみ。
+     ⚠️ 横送りは overlay 内で完結し、縦スクロールと同居しないため touch-action の分離は不要。 */
   .lb{position:fixed;inset:0;z-index:60;-webkit-transform:translateZ(0);transform:translateZ(0);display:flex;flex-direction:column;
     align-items:center;justify-content:center;padding:26px 20px;
     background:rgba(24,44,56,.78);
     opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s;}
   .lb.on{opacity:1;visibility:visible;}
-  .lb img{max-width:100%;max-height:66vh;display:block;border-radius:3px;
-    box-shadow:0 18px 44px rgba(12,24,32,.4);transform:scale(.96);transition:transform .4s cubic-bezier(.25,.8,.3,1);}
+  .lb .lb-viewport{max-width:100%;overflow:hidden;}
+  .lb .lb-track{display:flex;transition:transform .32s cubic-bezier(.25,.8,.3,1);}
+  .lb img{display:block;transform:scale(.96);transition:transform .4s cubic-bezier(.25,.8,.3,1);}
   .lb.on img{transform:scale(1);}
+  /* 1枚のとき: 従来の見た目 */
+  .lb:not(.multi) .lb-track img{max-width:100%;max-height:66vh;border-radius:3px;
+    box-shadow:0 18px 44px rgba(12,24,32,.4);}
+  /* 複数枚のとき: 全スライドを同じ箱に収める（letterbox になるため角丸と影は付けない） */
+  .lb.multi .lb-viewport{width:100%;}
+  .lb.multi .lb-track img{flex:0 0 100%;width:100%;height:60vh;object-fit:contain;}
+  .lb .lb-dots{display:none;}
+  .lb.multi .lb-dots{display:flex;gap:8px;justify-content:center;margin-top:16px;}
+  .lb .lb-dots i{width:6px;height:6px;border-radius:50%;background:rgba(246,250,252,.32);
+    transition:background-color .25s ease,transform .25s ease;cursor:pointer;}
+  .lb .lb-dots i.on{background:#F6FAFC;transform:scale(1.25);}
   .lb .lb-cap{max-width:100%;margin-top:20px;color:#F6FAFC;text-align:center;}
   .lb .lb-cap b{display:block;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.12em;}
   .lb .lb-cap span{display:block;font-size:12.5px;line-height:2;margin-top:8px;color:rgba(246,250,252,.82);}
