@@ -12,6 +12,13 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  /* ── ページは縦にしか動かさない（2026-07-30 実機で横パンが出たための封じ） ──
+     デスクトップ計測でははみ出し要素ゼロ（fixed 含む）。iOS 側でだけ横に動いたため、
+     ①横スクロールの禁止 ②横方向のオーバースクロール（ゴム引き）の禁止 の二重で塞ぐ。
+     ⚠️ body に touch-action:pan-y を付けてはいけない。touch-action は祖先との交差で効くため、
+        導入部の横送り（.strip＝指で横に送る設計）が死ぬ。横の制御は overflow 側で行う。 */
+  html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none;}
+
   body{background:#DEE7EC;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--ink);
     -webkit-font-smoothing:antialiased;}
   .phone{max-width:430px;margin:0 auto;background:var(--paper);min-height:100vh;padding-top:32px;padding-bottom:110px;}
@@ -297,7 +304,8 @@
     background:rgba(24,44,56,.78);
     opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s;}
   .lb.on{opacity:1;visibility:visible;}
-  .lb .lb-viewport{max-width:100%;overflow:hidden;}
+  /* pan-y ＝ 縦の操作はブラウザに任せ、横送りだけをこちらの JS で扱う */
+  .lb .lb-viewport{max-width:100%;overflow:hidden;touch-action:pan-y;}
   .lb .lb-track{display:flex;transition:transform .32s cubic-bezier(.25,.8,.3,1);}
   .lb img{display:block;transform:scale(.96);transition:transform .4s cubic-bezier(.25,.8,.3,1);}
   .lb.on img{transform:scale(1);}

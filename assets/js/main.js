@@ -144,17 +144,28 @@
       });
     });
 
-    // 指での横送り。開始点の判定はビューポート、追従は translateX の一時上書きで行う
-    var startX = 0, dx = 0, dragging = false;
+    /* 指での横送り。最初の移動12pxで縦横どちらが優勢かを一度だけ判定する（方向ロック）。
+       - 横が優勢 → ここで初めて追従を始める（translateX の一時上書き）
+       - 縦が優勢 → その指の操作が終わるまで横送りには一切切り替えない（縦はブラウザに委ねる）
+       ビューポートの touch-action:pan-y と対になっており、縦操作でブラウザがスクロールを
+       取ると pointercancel が来る＝こちらは何もしない、で辻褄が合う。 */
+    var startX = 0, startY = 0, dx = 0, axis = null, dragging = false;
     viewport.addEventListener('pointerdown', function(e){
       if(count <= 1) return;
-      dragging = true; startX = e.clientX; dx = 0;
-      track.style.transition = 'none';
-      viewport.setPointerCapture(e.pointerId);
+      dragging = true; axis = null;
+      startX = e.clientX; startY = e.clientY; dx = 0;
     });
     viewport.addEventListener('pointermove', function(e){
       if(!dragging) return;
-      dx = e.clientX - startX;
+      var mx = e.clientX - startX, my = e.clientY - startY;
+      if(!axis){
+        if(Math.abs(mx) < 12 && Math.abs(my) < 12) return;   // まだ判定しない
+        axis = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+        if(axis === 'y'){ dragging = false; return; }        // 縦と判定 → この指では横送りしない
+        track.style.transition = 'none';
+        viewport.setPointerCapture(e.pointerId);
+      }
+      dx = mx;
       // 端では抵抗を付ける（それ以上先が無いことを指に伝える）
       if((idx === 0 && dx > 0) || (idx === count - 1 && dx < 0)) dx = dx * .35;
       track.style.transform = 'translateX(calc(' + (-idx * 100) + '% + ' + dx.toFixed(1) + 'px))';
@@ -162,6 +173,7 @@
     function settle(){
       if(!dragging) return;
       dragging = false;
+      if(axis !== 'x') return;
       track.style.transition = '';
       if(Math.abs(dx) > 48) go(idx + (dx < 0 ? 1 : -1)); else render();
       dx = 0;
